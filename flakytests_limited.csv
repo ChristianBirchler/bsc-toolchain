@@ -1,0 +1,14 @@
+URL,SHA,Test Count,Module Name,Test Name,Category,Version
+https://github.com/apache/nifi-registry,f1e5aef7bef7d4f5ec89b2347e6a6c7e78aa589c,15,nifi-registry-nifi-registry-core-nifi-registry-web-api,org.apache.nifi.registry.security.authorization.ResourceAuthorizationFilterSpec.secure requests to an unguarded resource are allowed without an authorization check,SKIP,Extended
+https://github.com/ArangoDB-Community/arangodb-tinkerpop-provider,e61a1b05cda8b1aa6f61dbbed77841b6f260a9e6,8,arangodb-tinkerpop-provider,com.arangodb.tinkerpop.gremlin.client.test.ClientTest.test_ServerVersion,SKIP,Extended
+https://github.com/davidmoten/rxjava2-extras,d0315b6ecb0d24437ec0d440b6d768e89247d56c,393,rxjava2-extras,com.github.davidmoten.rx2.SpecializedMspcLinkedQueueTest.testPushPoll,SKIP,Extended
+https://github.com/dnsjava/dnsjava,d97b6a0685d59143372bb392ab591dd8dd840b61,625,dnsjava,org.xbill.DNS.APLRecordTest.test_malformed_address,SKIP,Extended
+https://github.com/eclipse-ee4j/tyrus,d86e0cb0a4f26ba89daf8668137c156e57fea565,185,tyrus-tests-e2e-standard-config,org.glassfish.tyrus.test.standard_config.ProxyTest.testConnectStuck,SKIP,Extended
+https://github.com/eclipse-ee4j/tyrus,d86e0cb0a4f26ba89daf8668137c156e57fea565,1,tyrus-tests-servlet-autobahn-server,org.glassfish.tyrus.tests.servlet.autobahn.StandaloneServer.testServer,SKIP,Extended
+https://github.com/outbrain/aletheia,024a4b7ea4c186329bbe1e20bb31048d95add836,24,Aletheia-aletheia-core,com.outbrain.aletheia.DatumAuditorStressTest.test_breadcrumbDispatcher_under_load,SKIP,Extended
+https://github.com/phax/as2-lib,a5b4ba5d5b110e649770609e803338763bec8c39,1,as2-lib-as2-partnership-mongodb,MongoDBPartnershipFactorySpec.add a Partnership,SKIP,Extended
+https://github.com/ripe-ncc/whois,79e90f41d7eeee42f2c3ad299bfccc4e8005ce8c,19,whois-whois-endtoend,net.ripe.db.whois.spec.domain.AckResponseTest.successes,SKIP,Extended
+https://github.com/spotify/dbeam,70837e8f610c16c012be424341857236d4242785,55,dbeam-dbeam-core,com.spotify.dbeam.args.JdbcExportArgsTest.should parse correctly for mysql connection,SKIP,Extended
+https://github.com/wikimedia/search-highlighter,8ba6fef7f835a309a1290db55230b2a2b0eaa59a,1109,search-highlighter-experimental-highlighter-core,org.wikimedia.search.highlighter.experimental.snippet.CharScanningSegmenterTest.randomSegments { seed=[A59FE0BB67EE084A:C8345A018D6EEB3]},SKIP,Extended
+https://github.com/wildfly/wildfly-maven-plugin,0dda0062d660813c469040f60999aac76660e1f4,16,wildfly-maven-plugin-tests-domain-tests,org.wildfly.plugin.deployment.DeployTest.testDeployOnly,SKIP,Extended
+https://github.com/wildfly/wildfly-maven-plugin,0dda0062d660813c469040f60999aac76660e1f4,33,wildfly-maven-plugin-tests-standalone-tests,org.wildfly.plugin.deployment.ArtifactDeploymentTest.testUndeploy,SKIP,Extended
