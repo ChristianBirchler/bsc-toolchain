@@ -5,6 +5,8 @@ import csv
 import time
 import os
 import re
+import pydriller
+import git
 
 class bcolors:
     HEADER = '\033[95m'
