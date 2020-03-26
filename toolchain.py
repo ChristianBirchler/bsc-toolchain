@@ -17,18 +17,25 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def get_unique_urls_names(dataset):
+def get_unique_urls_and_names(dataset):
     print("extract project urls ...")
     unique_urls_lst = []
+
     with open(dataset, "r") as file:
         csv_reader = csv.reader(file, delimiter=",")
         for row in csv_reader:
-            if row[0] not in unique_urls_lst:
-                print("add: " + row[0])
+            url = row[0]
+
+            match = re.match(r".*/(.*$)", url) # regex for matching project names
+            if match is None: continue
+
+            name = match.group(1) # access the project name
+
+            if (url,name) not in unique_urls_lst:
+                print("add: " + url)
                 time.sleep(0.1)
-                match = re.match(r".*/(.*$)", row[0])
-                if match:
-                    unique_urls_lst.append((row[0],match.group(1)))
+                unique_urls_lst.append((url,match.group(1)))
+
     return unique_urls_lst[1:]
 
 
@@ -113,7 +120,7 @@ if __name__ == "__main__":
         os.system("rm -rf " + PROJ_DIR)
         os.system("mkdir " + PROJ_DIR)
 
-    project_urls_names = get_unique_urls_names(DATASET)
+    project_urls_names = get_unique_urls_and_names(DATASET)
     #project_names = get_project_names(project_urls)
 
     for i in range(len(project_urls_names)):
