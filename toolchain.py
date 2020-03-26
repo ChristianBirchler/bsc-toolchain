@@ -67,6 +67,21 @@ def get_project_names(project_urls):
     return proj_names
 
 
+def get_project_only_data(dataset, proj_name):
+    proj_data = []
+
+    with open(dataset, "r") as file:
+        csv_reader = csv.reader(file, delimiter=",")
+        for row in csv_reader:
+            match = re.match(r".*/(.*$)", row[0])
+            if match is None: continue
+            
+            name = match.group(1)
+            if name == proj_name:
+                proj_data.append((row[0],row[1],row[2],row[3],row[4],row[5],row[6]))
+
+    return proj_data
+
 
 def run_metric_gathering_on(dataset, proj_dir, proj_name):
     print("run metric gathering on " + bcolors.UNDERLINE + proj_name + bcolors.ENDC)
