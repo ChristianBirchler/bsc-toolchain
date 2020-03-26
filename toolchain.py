@@ -42,8 +42,10 @@ def get_unique_urls_and_names(dataset):
 def clone(url, proj_dir):
     print(bcolors.OKBLUE + "start cloning " + bcolors.ENDC + bcolors.BOLD + url + bcolors.ENDC)
     os.chdir(proj_dir)
+
     bash_cmd = "git clone " + url + ".git"
     os.system(bash_cmd)
+    
     os.chdir("../")
     print(bcolors.OKGREEN + "clone successful" + bcolors.ENDC)
 
