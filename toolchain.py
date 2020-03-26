@@ -56,12 +56,26 @@ def get_project_names(project_urls):
     return proj_names
 
 
-def run_metric_gathering_on(proj_dir, proj_name):
-    print("run metric gathering on " + bcolors.UNDERLINE + proj_name + bcolors.ENDC)
-    os.chdir(proj_dir+proj_name)
 
+def run_metric_gathering_on(dataset, proj_dir, proj_name):
+    print("run metric gathering on " + bcolors.UNDERLINE + proj_name + bcolors.ENDC)
+    os.chdir(ROOT)
+    project_flaky_data = get_project_only_data(dataset, proj_name)
+    
+    os.chdir(proj_dir+proj_name) # change PWD to current project's folder   
+
+    repo = git.Repo("./") 
+    git_cmd = repo.git
+
+    # iterate over all commits according to the current project
+    for i in range(len(project_flaky_data)):
+        git_cmd.checkout(project_flaky_data[i][1])
+
+        os.system("mvn test")
     
 
+
+    #git_cmd.checkout("master")
     os.chdir(ROOT)
     
 
@@ -106,7 +120,7 @@ if __name__ == "__main__":
         if RESET_PROJ_DIR:
             clone(project_urls_names[i][0], PROJ_DIR)
         
-        run_metric_gathering_on(PROJ_DIR, project_urls_names[i][1])
+        run_metric_gathering_on(DATASET, PROJ_DIR, project_urls_names[i][1])
 
         if not KEEP_ALL_PROJ_IN_LOOP:
             delete_projects(PROJ_DIR)
