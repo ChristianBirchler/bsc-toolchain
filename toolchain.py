@@ -114,8 +114,8 @@ def run_metric_gathering_on(dataset, proj_dir, proj_name):
 if __name__ == "__main__":
     print("start toolchain script ...")
     
-    if len(sys.argv) != 2:
-        raise Exception(f"{bcolors.FAIL}one file (data) argument is needed{bcolors.FAIL}")
+    # if len(sys.argv) != 2:
+    #     raise Exception(f"{bcolors.FAIL}one file (data) argument is needed{bcolors.FAIL}")
 
 
     # iterate over projects
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     t0 = time.time()
 
     # PARAMETERS
-    DATASET = sys.argv[1]
+    DATASET = "test_data.csv" #sys.argv[1] # command line argument
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
     RESET_PROJ_DIR = False
@@ -145,11 +145,15 @@ if __name__ == "__main__":
     project_urls_names = get_unique_urls_and_names(DATASET)
     #project_names = get_project_names(project_urls)
 
+    
+
     for i in range(len(project_urls_names)):
         if RESET_PROJ_DIR:
             clone(project_urls_names[i][0], PROJ_DIR)
         
-        run_metric_gathering_on(DATASET, PROJ_DIR, project_urls_names[i][1])
+        proj_name = project_urls_names[i][1]
+
+        run_metric_gathering_on(DATASET, PROJ_DIR, proj_name)
 
         if not KEEP_ALL_PROJ_IN_LOOP:
             delete_projects(PROJ_DIR)
