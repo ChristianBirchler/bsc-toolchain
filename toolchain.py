@@ -128,6 +128,9 @@ if __name__ == "__main__":
     #   delete project to save space
 
 
+    # start timer
+    t0 = time.time()
+
     # PARAMETERS
     DATASET = sys.argv[1]
     ROOT = os.getcwd()
@@ -152,4 +155,8 @@ if __name__ == "__main__":
             delete_projects(PROJ_DIR)
 
 
-
+    # stop timer
+    t1 = time.time()
+    te = t1 - t0
+    print("toolchain script finished within {} seconds.".format(te))
+    print("{} minutes.".format(te/60))
