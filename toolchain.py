@@ -83,24 +83,33 @@ def get_project_only_data(dataset, proj_name):
     return proj_data
 
 
-def run_metric_gathering_on(dataset, proj_dir, proj_name):
+def run_metric_gathering_on(dataset, parent_proj_dir, proj_name):
+    """
+    This function run all measurements of one particular project clone.
+
+    """
     print("run metric gathering on " + bcolors.UNDERLINE + proj_name + bcolors.ENDC)
     os.chdir(ROOT)
+
+    # all entries of dataset according to this particular project clone
     project_flaky_data = get_project_only_data(dataset, proj_name)
     
-    os.chdir(proj_dir+proj_name) # change PWD to current project's folder   
+    os.chdir(parent_proj_dir+proj_name) # change PWD to current project's folder   
 
+    # git API
     repo = git.Repo("./") 
     git_cmd = repo.git
 
     # iterate over all commits according to the current project
     for i in range(len(project_flaky_data)):
-        git_cmd.checkout(project_flaky_data[i][1])
-
-        os.system("mvn test")
+        try:
+            git_cmd.checkout(project_flaky_data[i][1])
+            os.system("mvn test")
+        except:
+            print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] + bcolors.ENDC)
+                 
+        
     
-
-
     #git_cmd.checkout("master")
     os.chdir(ROOT)
     
