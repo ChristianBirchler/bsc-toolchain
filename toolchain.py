@@ -155,7 +155,7 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name):
             has_modified_argline = add_java_agent_to_pom(AGENT_PATH)
 
             if has_modified_argline:
-            os.system("mvn test")
+                os.system("mvn test")
             else:
                 os.system("mvn test -DargLine=" + AGENT_PATH)
         except:
@@ -210,6 +210,7 @@ if __name__ == "__main__":
 
     
     # iterate over projects and NOT over single entries of the dataset      len(project_urls_names)
+    for i in range(len(project_urls_names)):
         if RESET_PROJ_DIR:
             clone(project_urls_names[i][0], PROJ_DIR)
         
