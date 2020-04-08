@@ -195,12 +195,15 @@ if __name__ == "__main__":
     DATASET = "test_data.csv" #sys.argv[1] # command line argument
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
+    AGENT_PATH = "/home/christian/Desktop/bsc-agent/build/libs/bytebuddy.jar"
     RESET_PROJ_DIR = False
     KEEP_ALL_PROJ_IN_LOOP = True
+
 
     if RESET_PROJ_DIR:
         os.system("rm -rf " + PROJ_DIR)
         os.system("mkdir " + PROJ_DIR)
+
 
     project_urls_names = get_unique_urls_and_names(DATASET)
     #project_names = get_project_names(project_urls)
