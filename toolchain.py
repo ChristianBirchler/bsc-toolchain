@@ -209,13 +209,13 @@ if __name__ == "__main__":
     #project_names = get_project_names(project_urls)
 
     
-
-    for i in range(len(project_urls_names)):
+    # iterate over projects and NOT over single entries of the dataset      len(project_urls_names)
         if RESET_PROJ_DIR:
             clone(project_urls_names[i][0], PROJ_DIR)
         
         proj_name = project_urls_names[i][1]
 
+        # iterate over all entries of dataset which belongs to this project
         run_metric_gathering_on(DATASET, PROJ_DIR, proj_name)
 
         if not KEEP_ALL_PROJ_IN_LOOP:
