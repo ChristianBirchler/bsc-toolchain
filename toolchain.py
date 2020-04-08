@@ -7,6 +7,7 @@ import os
 import re
 import pydriller
 import git
+import xml.etree.ElementTree as ET
 
 class bcolors:
     HEADER = '\033[95m'
@@ -81,6 +82,50 @@ def get_project_only_data(dataset, proj_name):
                 proj_data.append((row[0],row[1],row[2],row[3],row[4],row[5],row[6]))
 
     return proj_data
+
+
+def get_namespace(element):
+    """
+    Return the namespace of the root element
+    of the pom.xml. The namespace is usually
+    for all elements int the pom the same.
+    """
+    tag = element.tag
+    match = re.match(r"^{.*}", tag)
+    namespace = match.group(0)
+    return namespace
+
+
+def add_java_agent_to_pom(agent_path):
+    """
+    Add "-javaagent:/path/to/agent.jar" inside the sureifre-plugin
+    <argLine> tag. If such a tag does not exist then append the
+    java agent via Shell command line '-DargLine=...'
+    The directory of the shell is already the one of the project.
+
+    return true if pom has <argLine> tag otherwise false
+    """
+    file = "pom.xml"
+
+    # register namespace otherwise new pom will have 'ns0' namespace
+    namespace = get_namespace(ET.parse(file).getroot())
+    ET.register_namespace('', namespace[1:-1])
+
+    tree = ET.parse(file)
+    root = tree.getroot()
+    
+    has_argline = False
+
+    for el in tree.iter(namespace+"argLine"):
+        has_argline = True
+        #print(el.text)
+        el.text = "-javaagent:" + agent_path + " " + el.text
+        #print(el.text)
+
+    tree.write("pom.xml")
+
+    return has_argline
+
 
 
 def run_metric_gathering_on(dataset, parent_proj_dir, proj_name):
