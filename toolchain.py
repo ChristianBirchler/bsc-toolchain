@@ -145,17 +145,23 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name):
     repo = git.Repo("./") 
     git_cmd = repo.git
 
+    # variable to show if pom has a 'argLine' tag
+    has_modified_argline = False
+
     # iterate over all commits according to the current project
     for i in range(len(project_flaky_data)):
         try:
             git_cmd.checkout(project_flaky_data[i][1])
+            has_modified_argline = add_java_agent_to_pom(AGENT_PATH)
+
+            if has_modified_argline:
             os.system("mvn test")
+            else:
+                os.system("mvn test -DargLine=" + AGENT_PATH)
         except:
             print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] + bcolors.ENDC)
                  
-        
-    
-    #git_cmd.checkout("master")
+    git_cmd.checkout("master")
     os.chdir(ROOT)
     
 
