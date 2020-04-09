@@ -99,11 +99,9 @@ def get_namespace(element):
 def add_java_agent_to_pom(agent_path):
     """
     Add "-javaagent:/path/to/agent.jar" inside the sureifre-plugin
-    <argLine> tag. If such a tag does not exist then append the
-    java agent via Shell command line '-DargLine=...'
-    The directory of the shell is already the one of the project.
-
-    return true if pom has <argLine> tag otherwise false
+    <argLine> tag. If nor <argLine> or <configuration> tag are not
+    present then this function will create these tags and write it
+    to a new 'pom.xml'.
     """
     file = "pom.xml"
 
@@ -114,21 +112,44 @@ def add_java_agent_to_pom(agent_path):
     tree = ET.parse(file)
     root = tree.getroot()
     
-    has_argline = False
+    surefire_plugin_lst = []
+    # collect surefire plugins
+    for plugin in tree.iter(namespace + "plugin"):
+        if plugin.find(namespace + "artifactId").text == "maven-surefire-plugin":
+            surefire_plugin_lst.append(plugin)
+  
+    for plugin in surefire_plugin_lst:
+        # has configuration?
+        #   if so then check if contains argLine
+        #       if so then appen java agent
+        #       else create argLine
+        #   else create configuration with argline
 
-    for el in tree.iter(namespace+"argLine"):
-        has_argline = True
-        #print(el.text)
-        el.text = "-javaagent:" + agent_path + " " + el.text
-        #print(el.text)
+        configuration = plugin.find(namespace + "configuration")
+        if configuration != None:
+            argline = configuration.find(namespace + "argLine")
+            if argline != None:
+                argline.text = "-javaagent:" + agent_path + " " + argline.text
+            else:
+                # create argline tag
+                new_argline = ET.Element(namespace+"argLine")
+                new_argline.text = "-javaagent:" + agent_path
+                configuration.append(new_argline)
+        else:
+            # create configuration tag with argline tag contained
+            new_configuration = ET.Element(namespace+"configuration")
 
+            new_argline = ET.Element(namespace+"argLine")
+            new_argline.text = "-javaagent:" + agent_path
+            
+            new_configuration.append(new_argline)
+            plugin.append(new_configuration)
+            
     tree.write("pom.xml")
 
-    return has_argline
 
 
-
-def run_metric_gathering_on(dataset, parent_proj_dir, proj_name):
+def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
     """
     This function run all measurements of one particular project clone.
 
@@ -145,23 +166,24 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name):
     repo = git.Repo("./") 
     git_cmd = repo.git
 
-    # variable to show if pom has a 'argLine' tag
-    has_modified_argline = False
+    # do the measurement of a test 'iter' times
+    for j in range(iter):
+        # iterate over all commits according to the current project
+        for i in range(len(project_flaky_data)):
+            try:
+                git_cmd.checkout(project_flaky_data[i][1])
 
-    # iterate over all commits according to the current project
-    for i in range(len(project_flaky_data)):
-        try:
-            git_cmd.checkout(project_flaky_data[i][1])
-            has_modified_argline = add_java_agent_to_pom(AGENT_PATH)
+                add_java_agent_to_pom(AGENT_PATH)
 
-            if has_modified_argline:
                 os.system("mvn test")
-            else:
-                os.system("mvn test -DargLine=" + AGENT_PATH)
-        except:
-            print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] + bcolors.ENDC)
+            except:
+                print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] + bcolors.ENDC)
                  
-    git_cmd.checkout("master")
+    try:             
+        git_cmd.checkout("master") 
+    except:
+        print(bcolors.WARNING + "Could not checkout to master branch" + bcolors.ENDC)
+
     os.chdir(ROOT)
     
 
@@ -196,7 +218,7 @@ if __name__ == "__main__":
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
     AGENT_PATH = "/home/christian/Desktop/bsc-agent/build/libs/bytebuddy.jar"
-    RESET_PROJ_DIR = False
+    RESET_PROJ_DIR = True
     KEEP_ALL_PROJ_IN_LOOP = True
 
 
@@ -217,7 +239,7 @@ if __name__ == "__main__":
         proj_name = project_urls_names[i][1]
 
         # iterate over all entries of dataset which belongs to this project
-        run_metric_gathering_on(DATASET, PROJ_DIR, proj_name)
+        run_metric_gathering_on(DATASET, PROJ_DIR, proj_name, 1)
 
         if not KEEP_ALL_PROJ_IN_LOOP:
             delete_projects(PROJ_DIR)
