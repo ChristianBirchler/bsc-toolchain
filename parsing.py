@@ -28,7 +28,7 @@ def get_surefire_plugin(tree):
 
 
 if __name__ == "__main__":
-    file = "pom1.xml"
+    file = "pom3.xml"
         
     namespace = get_namespace(ET.parse(file).getroot())
     print(namespace)
@@ -37,30 +37,51 @@ if __name__ == "__main__":
     tree = ET.parse(file)
     root = tree.getroot()
 
-    has_argline = False
+    surefire_plugin_lst = []
+    # collect surefire plugins
+    for plugin in tree.iter(namespace + "plugin"):
+        if plugin.find(namespace + "artifactId").text == "maven-surefire-plugin":
+            surefire_plugin_lst.append(plugin)
+  
+    for plugin in surefire_plugin_lst:
+        # has configuration?
+        #   if so then check if contains argLine
+        #       if so then appen java agent
+        #       else create argLine
+        #   else create configuration
 
-    for el in tree.iter(namespace+"argLine"):
-        has_argline = True
-        print(el.text)
-        el.text = "-javaagent:/myAgent.jar " + el.text
-        print(el.text)
-        
+        configuration = plugin.find(namespace + "configuration")
+        if configuration != None:
+            argline = configuration.find(namespace + "argLine")
+            if argline != None:
+                argline.text = "-javaagent:/path/to/agent.jar " + argline.text
+            else:
+                # create argline
+                new_argline = ET.Element(namespace+"argLine")
+                new_argline.text = "-javaagent:/path/to/agent.jar"
+                configuration.append(new_argline)
+        else:
+            # create configuration
+            new_configuration = ET.Element(namespace+"configuration")
 
+            new_argline = ET.Element(namespace+"argLine")
+            new_argline.text = "-javaagent:/path/to/agent.jar"
+            
+            new_configuration.append(new_argline)
+            plugin.append(new_configuration)
+            
 
-    # surefire_plugin = None
-    # has_config = False
-    # for el in tree.iter(namespace+"plugin"):
-    #     if el.find(namespace+"artifactId").text == "maven-surefire-plugin":
-    #         surefire_plugin = el
-    #         if el.find(namespace+"configuration") != None:
-    #             has_config = True
-        
-    # print(surefire_plugin)
-    # print(has_config)
 
 
     tree.write("new_pom.xml")
 
+
+  # for el in tree.iter(namespace+"argLine"):
+    #     has_argline = True
+    #     print(el.text)
+    #     el.text = "-javaagent:/myAgent.jar " + el.text
+    #     print(el.text)
+        
 
 
  
