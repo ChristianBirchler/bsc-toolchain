@@ -21,6 +21,12 @@ class bcolors:
 
 
 def get_unique_urls_and_names(dataset):
+    """
+    This function returns a list with 2-tuples which contains
+    the url and the project name. The project name is extracted
+    with a regular expression. Further the list must not 
+    contain duplicates.
+    """
     print("extract project urls ...")
     unique_urls_lst = []
 
@@ -39,7 +45,7 @@ def get_unique_urls_and_names(dataset):
                 time.sleep(0.1)
                 unique_urls_lst.append((url,match.group(1)))
 
-    return unique_urls_lst[1:]
+    return unique_urls_lst
 
 
 def clone(url, proj_dir):
