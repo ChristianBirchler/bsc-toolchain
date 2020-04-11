@@ -108,6 +108,7 @@ def add_java_agent_to_pom(agent_path):
     <argLine> tag. If nor <argLine> or <configuration> tag are not
     present then this function will create these tags and write it
     to a new 'pom.xml'.
+    If no surefire plugin is present then return False otherwise True
     """
     file = "pom.xml"
 
@@ -124,6 +125,8 @@ def add_java_agent_to_pom(agent_path):
         if plugin.find(namespace + "artifactId").text == "maven-surefire-plugin":
             surefire_plugin_lst.append(plugin)
   
+    if len(surefire_plugin_lst) == 0: return False
+
     for plugin in surefire_plugin_lst:
         # has configuration?
         #   if so then check if contains argLine
@@ -152,6 +155,7 @@ def add_java_agent_to_pom(agent_path):
             plugin.append(new_configuration)
             
     tree.write("pom.xml")
+    return True
 
 
 
