@@ -152,7 +152,11 @@ def add_java_agent_to_pom(agent_path):
 def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
     """
     This function run all measurements of one particular project clone.
-
+    1. Extract data of current project only
+    2. Iterate over all flaky test entries 'iter' times
+    3. Append javaagent to project parent's pom.xml
+    4. If pom does not contain the surefire plugin then append agent
+       via command line directly
     """
     print("run metric gathering on " + bcolors.UNDERLINE + proj_name + bcolors.ENDC)
     os.chdir(ROOT)
@@ -173,11 +177,15 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
             try:
                 git_cmd.checkout(project_flaky_data[i][1])
 
-                add_java_agent_to_pom(AGENT_PATH)
+                has_surefire_plugin = add_java_agent_to_pom(AGENT_PATH)
 
-                os.system("mvn test")
+                if has_surefire_plugin:
+                    os.system("mvn test")
+                else:
+                    os.system("mvn test -DargLine=-javaagent:"+ AGENT_PATH)
             except:
-                print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] + bcolors.ENDC)
+                print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] +\
+                     " or parsing the 'pom.xml' went wrong." + bcolors.ENDC)
                  
     try:             
         git_cmd.checkout("master") 
