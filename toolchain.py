@@ -231,13 +231,15 @@ if __name__ == "__main__":
     # start timer
     t0 = time.time()
 
-    # PARAMETERS
-    DATASET = "test_data.csv" #sys.argv[1] # command line argument
+    #################### PARAMETERS ####################
+    DATASET = "validation_data.csv" #sys.argv[1] # command line argument
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
     AGENT_PATH = "/home/christian/Desktop/bsc-agent/build/libs/bytebuddy.jar"
+    NITER = 1
     RESET_PROJ_DIR = True
     KEEP_ALL_PROJ_IN_LOOP = True
+    #################### PARAMETERS ####################
 
 
     if RESET_PROJ_DIR:
@@ -257,7 +259,7 @@ if __name__ == "__main__":
         proj_name = project_urls_names[i][1]
 
         # iterate over all entries of dataset which belongs to this project
-        run_metric_gathering_on(DATASET, PROJ_DIR, proj_name, 1)
+        run_metric_gathering_on(DATASET, PROJ_DIR, proj_name, NITER)
 
         if not KEEP_ALL_PROJ_IN_LOOP:
             delete_projects(PROJ_DIR)
