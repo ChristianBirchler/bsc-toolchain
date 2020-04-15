@@ -1,0 +1,13 @@
+nifi-registry
+arangodb-tinkerpop-provider
+dnsjava
+whois
+search-highlighter
+wildfly-maven-plugin
+balana
+joda-time
+spring-boot
+alien4cloud
+esper
+jhipster-registry
+nexus-repository-helm
