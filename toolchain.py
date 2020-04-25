@@ -186,6 +186,7 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
         for i in range(len(project_flaky_data)):
             try:
                 git_cmd.checkout(project_flaky_data[i][1])
+                os.system("git checkout -- .") # revert previous changes in the pom
 
                 has_surefire_plugin = add_java_agent_to_pom(AGENT_PATH)
 
@@ -232,20 +233,24 @@ if __name__ == "__main__":
     t0 = time.time()
 
     #################### PARAMETERS ####################
-    DATASET = "validation_data.csv" #sys.argv[1] # command line argument
+    DATASET = "small_set.csv" #sys.argv[1] # command line argument
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
-    AGENT_PATH = "/home/christian/Desktop/bsc-agent/build/libs/bytebuddy.jar"
-    NITER = 1
+    AGENT_PATH = "/home/christian/Desktop/bsc-agent/agent/target/agent-0.0.1-jar-with-dependencies.jar"
+    NITER = 10
     RESET_PROJ_DIR = True
-    KEEP_ALL_PROJ_IN_LOOP = True
+    KEEP_ALL_PROJ_IN_LOOP = False
     #################### PARAMETERS ####################
 
 
     if RESET_PROJ_DIR:
-        os.system("rm -rf " + PROJ_DIR)
-        os.system("mkdir " + PROJ_DIR)
-
+        try:
+            os.system("rm -rf " + PROJ_DIR)
+            print("project directory deleted")
+            os.system("mkdir " + PROJ_DIR)
+            print("new project directory created")
+        except:
+            pass
 
     project_urls_names = get_unique_urls_and_names(DATASET)
     #project_names = get_project_names(project_urls)
