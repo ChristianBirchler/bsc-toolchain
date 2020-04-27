@@ -159,6 +159,15 @@ def add_java_agent_to_pom(agent_path):
 
 
 
+def get_unique_hashes(project_data):
+    unique_hashes = []
+    for entry in project_data:
+        if entry[1] in unique_hashes:
+            continue
+        unique_hashes.append(entry[1])
+    return unique_hashes
+
+
 def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
     """
     This function run all measurements of one particular project clone.
