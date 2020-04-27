@@ -272,10 +272,11 @@ if __name__ == "__main__":
     t0 = time.time()
 
     #################### PARAMETERS ####################
-    DATASET = "small_set.csv" #sys.argv[1] # command line argument
+    DATASET = "validation_data.csv" #sys.argv[1] # command line argument
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
     AGENT_PATH = "/home/christian/Desktop/bsc-agent/agent/target/agent-0.0.1-jar-with-dependencies.jar"
+    SUREFIRE_RESULT_PATH = "/home/christian/Desktop/bsc-toolchain/surefire-results/"
     NITER = 10
     RESET_PROJ_DIR = True
     KEEP_ALL_PROJ_IN_LOOP = False
