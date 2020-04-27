@@ -158,6 +158,28 @@ def add_java_agent_to_pom(agent_path):
     return True
 
 
+def save_surefire_reports(proj_name, commit_hash, iter):
+    """
+    Save all surefire reports of all submodules in the 'SUREFIRE_RESULT_PATH'.
+    Create for each (project, commit_hash, iter) a folder for storing all
+    reports of the according test run.
+    Note: The current WORKDIR is the root of the project
+    """
+
+    # create folder <projecname_hash_iteration> folder
+    folder_name = proj_name+"_"+commit_hash+"_"+str(iter)
+
+    try:
+        os.mkdir(SUREFIRE_RESULT_PATH+folder_name)
+    except:
+        print("Could not create the folder '" + folder_name + "'")
+        return None
+    
+    # search for all surefire reports and copy them to the result folder
+    for subdir, dirs, files in os.walk(os.getcwd()):
+        if "surefire-reports" in subdir:
+            os.system("cp -r "+subdir+"/* "+SUREFIRE_RESULT_PATH+folder_name+"/")
+
 
 def get_unique_hashes(project_data):
     unique_hashes = []
