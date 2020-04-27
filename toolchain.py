@@ -173,6 +173,8 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
 
     # all entries of dataset according to this particular project clone
     project_flaky_data = get_project_only_data(dataset, proj_name)
+
+    unique_hashes = get_unique_hashes(project_flaky_data)
     
     os.chdir(parent_proj_dir+proj_name) # change PWD to current project's folder   
 
@@ -180,24 +182,30 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
     repo = git.Repo("./") 
     git_cmd = repo.git
 
-    # do the measurement of a test 'iter' times
-    for j in range(iter):
-        # iterate over all commits according to the current project
-        for i in range(len(project_flaky_data)):
-            try:
-                git_cmd.checkout(project_flaky_data[i][1])
-                os.system("git checkout -- .") # revert previous changes in the pom
+    # iterate over all commits according to the current project
+    for i in range(len(unique_hashes)):
+        try:
+            commit_hash = unique_hashes[i] #project_flaky_data[i][1]
+            git_cmd.checkout(commit_hash)
 
-                has_surefire_plugin = add_java_agent_to_pom(AGENT_PATH)
+            has_surefire_plugin = add_java_agent_to_pom(AGENT_PATH)
 
+            #do the measurement of a test 'NITER' times
+            for j in range(NITER):
                 if has_surefire_plugin:
                     os.system("mvn test")
                 else:
                     os.system("mvn test -DargLine=-javaagent:"+ AGENT_PATH)
-            except:
-                print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] +\
-                     " or parsing the 'pom.xml' went wrong." + bcolors.ENDC)
-                 
+
+                # store the test results of the surefire plugin
+                save_surefire_reports(proj_name, commit_hash, j)
+
+            os.system("git checkout -- .") # revert previous changes in the pom
+
+        except:
+            print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] +\
+                    " or parsing the 'pom.xml' went wrong." + bcolors.ENDC)
+                
     try:             
         git_cmd.checkout("master") 
     except:
