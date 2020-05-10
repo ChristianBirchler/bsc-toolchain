@@ -219,16 +219,24 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
             commit_hash = unique_hashes[i] #project_flaky_data[i][1]
             git_cmd.checkout(commit_hash)
 
-            has_surefire_plugin = add_java_agent_to_pom(AGENT_PATH)
+            #has_surefire_plugin = add_java_agent_to_pom(AGENT_PATH)
+
+            # the jar inject measurement code into test cases
+            # the jar also add the dependencies to the pom
+            os.system("java -jar "+JAR_PATH+" ./")
 
             #do the measurement of a test 'NITER' times
             for j in range(NITER):
-                if has_surefire_plugin:
-                    os.system("mvn test")
-                else:
-                    os.system("mvn test -DargLine=-javaagent:"+ AGENT_PATH)
+                # avoid style checking and no build fail (modules might be skipped otherwise)
+                os.system("mvn -Dcheckstyle.skip test -fn")
+
+                # if has_surefire_plugin:
+                #     os.system("mvn test")
+                # else:
+                #     os.system("mvn test -DargLine=-javaagent:"+ AGENT_PATH)
 
                 # store the test results of the surefire plugin
+
                 save_surefire_reports(proj_name, commit_hash, j)
 
             os.system("git checkout -- .") # revert previous changes in the pom
@@ -272,10 +280,11 @@ if __name__ == "__main__":
     t0 = time.time()
 
     #################### PARAMETERS ####################
-    DATASET = "validation_data.csv" #sys.argv[1] # command line argument
+    DATASET = "flakytests.csv" #sys.argv[1] # command line argument
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
     AGENT_PATH = "/home/christian/Desktop/bsc-agent/agent/target/agent-0.0.1-jar-with-dependencies.jar"
+    JAR_PATH = "/home/christian/Desktop/bsc-sourcetransform/target/bsc-sourcetransform-0.0.1-jar-with-dependencies.jar"
     SUREFIRE_RESULT_PATH = "/home/christian/Desktop/bsc-toolchain/surefire-results/"
     NITER = 10
     RESET_PROJ_DIR = True
