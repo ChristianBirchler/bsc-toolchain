@@ -223,10 +223,14 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
 
             # the jar inject measurement code into test cases
             # the jar also add the dependencies to the pom
-            os.system("java -jar "+JAR_PATH+" ./")
+            #os.system("java -jar "+JAR_PATH+" ./ "+MEASUREMENT_PATH+" ")
 
             #do the measurement of a test 'NITER' times
             for j in range(NITER):
+
+                # inject code to test sources
+                os.system("java -jar "+JAR_PATH+" ./ "+MEASUREMENT_PATH+" "+str(j))
+
                 # avoid style checking and no build fail (modules might be skipped otherwise)
                 os.system("mvn -Dcheckstyle.skip test -fn")
 
@@ -239,7 +243,8 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
 
                 save_surefire_reports(proj_name, commit_hash, j)
 
-            os.system("git checkout -- .") # revert previous changes in the pom
+                os.system("git checkout -- .") # revert previous changes in the pom
+                os.system("mvn clean")
 
         except:
             print(bcolors.WARNING + "Could not checkout to " + project_flaky_data[i][1] +\
@@ -286,6 +291,7 @@ if __name__ == "__main__":
     AGENT_PATH = "/home/christian/Desktop/bsc-agent/agent/target/agent-0.0.1-jar-with-dependencies.jar"
     JAR_PATH = "/home/christian/Desktop/bsc-sourcetransform/target/bsc-sourcetransform-0.0.1-jar-with-dependencies.jar"
     SUREFIRE_RESULT_PATH = "/home/christian/Desktop/bsc-toolchain/surefire-results/"
+    MEASUREMENT_PATH = "/home/christian/Desktop/data/myMeasurements.csv"
     NITER = 10
     RESET_PROJ_DIR = True
     KEEP_ALL_PROJ_IN_LOOP = False
