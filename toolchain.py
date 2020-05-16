@@ -229,7 +229,7 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
             for j in range(NITER):
 
                 # inject code to test sources
-                os.system("java -jar "+JAR_PATH+" ./ "+MEASUREMENT_PATH+" "+str(j))
+                os.system("java -jar "+JAR_PATH+" ./ "+MEASUREMENT_PATH+" "+proj_name+" "+commit_hash+" "+str(j))
 
                 # avoid style checking and no build fail (modules might be skipped otherwise)
                 os.system("mvn -Dcheckstyle.skip test -fn")
