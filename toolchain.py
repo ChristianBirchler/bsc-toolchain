@@ -177,8 +177,11 @@ def save_surefire_reports(proj_name, commit_hash, iter):
     
     # search for all surefire reports and copy them to the result folder
     for subdir, dirs, files in os.walk(os.getcwd()):
-        if "surefire-reports" in subdir:
-            os.system("cp -r "+subdir+"/* "+SUREFIRE_RESULT_PATH+folder_name+"/")
+        # if "surefire-reports" in subdir:
+        #     os.system("cp -r "+subdir+"/* "+SUREFIRE_RESULT_PATH+folder_name+"/")
+        for file in files:
+            if file[-4:] == ".xml" or file[-4:] == ".txt":
+                os.system("cp "+subdir+"/"+file+" "+SUREFIRE_RESULT_PATH+folder_name+"/")
 
 
 def get_unique_hashes(project_data):
