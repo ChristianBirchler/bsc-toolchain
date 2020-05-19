@@ -289,9 +289,9 @@ if __name__ == "__main__":
     ROOT = os.getcwd()
     PROJ_DIR = "./projects-clones/"
     AGENT_PATH = "/home/christian/Desktop/bsc-agent/agent/target/agent-0.0.1-jar-with-dependencies.jar"
-    JAR_PATH = "/home/christian/Desktop/bsc-sourcetransform/target/bsc-sourcetransform-0.0.1-jar-with-dependencies.jar"
-    SUREFIRE_RESULT_PATH = "/home/christian/Desktop/bsc-toolchain/surefire-results/"
-    MEASUREMENT_PATH = "/home/christian/Desktop/data/myMeasurements.csv"
+    JAR_PATH = "/home/ubuntu/bsc-sourcetransform/target/bsc-sourcetransform-0.0.1-jar-with-dependencies.jar"
+    SUREFIRE_RESULT_PATH = "/home/ubuntu/surefire-results/"
+    MEASUREMENT_PATH = "/home/ubuntu/data/measurements.csv"
     NITER = 10
     RESET_PROJ_DIR = True
     KEEP_ALL_PROJ_IN_LOOP = False
