@@ -198,9 +198,7 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
     This function run all measurements of one particular project clone.
     1. Extract data of current project only
     2. Iterate over all flaky test entries 'iter' times
-    3. Append javaagent to project parent's pom.xml
-    4. If pom does not contain the surefire plugin then append agent
-       via command line directly
+    3. Modify the test code of the project
     """
     print("run metric gathering on " + bcolors.UNDERLINE + proj_name + bcolors.ENDC)
     os.chdir(ROOT)
