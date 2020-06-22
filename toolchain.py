@@ -220,6 +220,12 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
             commit_hash = unique_hashes[i] #project_flaky_data[i][1]
             git_cmd.checkout(commit_hash)
 
+            # delete previos installed project builds
+            try:
+                os.system("rm -rf ~/.m2")
+            except:
+                pass
+
             #has_surefire_plugin = add_java_agent_to_pom(AGENT_PATH)
 
             # the jar inject measurement code into test cases
@@ -233,7 +239,8 @@ def run_metric_gathering_on(dataset, parent_proj_dir, proj_name, iter):
                 os.system("java -jar "+JAR_PATH+" ./ "+MEASUREMENT_PATH+" "+proj_name+" "+commit_hash+" "+str(j))
 
                 # avoid style checking and no build fail (modules might be skipped otherwise)
-                os.system("mvn -Dcheckstyle.skip test -fn")
+                os.system("mvn clean install -DskipTests -fn -B")
+                os.system("mvn -Dcheckstyle.skip test -fn -B")
 
                 # if has_surefire_plugin:
                 #     os.system("mvn test")
